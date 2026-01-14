@@ -1,0 +1,101 @@
+# Data Dictionary (RCM Dashboard)
+
+## Core metrics (definitions)
+
+### Denial Rate
+**Definition:** Percentage of submitted claims that received a denial status.  
+**Formula:** `Denied Claims / Total Submitted Claims`  
+**Notes:**  
+- “Denied” should reflect your dataset’s denial logic (e.g., `ClaimStatus = "Denied"` or presence of a denial event in the Denials table).  
+- If a claim can be denied multiple times, decide whether you’re counting **denied claims** (unique ClaimID) or **denial events** (rows in Denials). For this metric, it’s typically **unique claims denied**.
+
+---
+
+### Net Collection Rate (NCR)
+**Definition:** Percentage of allowed reimbursement that was actually collected (paid).  
+**Formula:** `Total Paid / Total Allowed`  
+**Notes:**  
+- **Allowed Amount** represents the adjudicated amount eligible for payment (after contract adjustments).  
+- If partial payments exist, **Total Paid** should sum all payment transactions tied to the claim(s).  
+- This is a simplified NCR and does not include refunds/recoupments unless modeled.
+
+---
+
+### Avg Days to Pay
+**Definition:** Average number of days between the date of service and the payment date.  
+**Formula:** `AVG(Payment Date - Service Date)`  
+**Notes:**  
+- If multiple payments exist per claim, use a consistent rule (common options: **first payment date** or **final payment date**).  
+- If using first payment, the metric reflects **time to first cash**. If using final payment, it reflects **time to full settlement**.
+
+---
+
+### A/R Aging
+**Definition:** Distribution of outstanding claims by how long they have remained unpaid since the date of service (or submit date, depending on your chosen business rule).  
+**Logic:** `Aging Days = Today - Service Date` *(or `Today - Submit Date` if you prefer)*  
+**Buckets:** `0–30`, `31–60`, `61–90`, `91–120`, `121+`  
+**Notes:**  
+- A claim is considered “outstanding” if it is not fully paid (e.g., status is Open/Submitted/Denied/Partial).  
+- Aging is a proxy unless tied to a full billing ledger; interpret as operational triage rather than precise accounting.
+
+---
+
+Full field definitions are in `data_dictionary.md`.
+
+## Grain
+- **Claims**: 1 row per claim (or claim line, depending on your design)
+- **Denials**: 1 row per denial event (claim can have 0..n denial events)
+- **Payments**: 1 row per payment transaction (claim can have 0..n payments)
+
+---
+
+## Tables & fields
+
+### Claims
+- ClaimID (string): unique claim identifier
+- PatientID (string): synthetic/de-identified identifier
+- ProviderID (string): billing/rendering provider identifier
+- Location (string): facility/clinic location
+- Specialty (string)
+- ServiceDate (date)
+- SubmitDate (date)
+- Payer (string)
+- PlanType (string) e.g., Commercial/Medicare/Medicaid/Self-pay
+- BilledAmount (decimal)
+- AllowedAmount (decimal)
+- ClaimStatus (string): Submitted/Paid/Denied/Partial/etc.
+
+### Denials
+- DenialID (string)
+- ClaimID (string): foreign key to Claims
+- DenialDate (date)
+- DenialCategory (string): Eligibility, Coding, Authorization, Medical Necessity, Timely Filing, Other
+- DenialReason (string): more specific reason text
+- AppealedFlag (boolean)
+- ResubmittedFlag (boolean)
+- Outcome (string): Overturned/Upheld/Pending (optional)
+
+### Payments
+- PaymentID (string)
+- ClaimID (string): foreign key to Claims
+- PaymentDate (date)
+- PaymentAmount (decimal)
+
+### Providers (dimension)
+- ProviderID (string)
+- ProviderName (string, optional synthetic)
+- Specialty (string)
+- Location (string)
+
+### Payers (dimension)
+- Payer (string)
+- PlanType (string)
+
+### Date (dimension)
+- Date
+- Year
+- Quarter
+- Month
+- Week
+
+---
