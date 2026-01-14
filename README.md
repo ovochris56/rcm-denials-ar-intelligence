@@ -54,7 +54,7 @@ No patient-identifiable data is used.
 - **Avg Days to Pay** = Avg(Payment Date - Service Date)
 - **A/R Aging** = Days outstanding grouped into buckets (0–30, 31–60, 61–90, 91–120, 121+)
 
-Full field definitions are in `data_dictionary.md`.
+Full field definitions are in `data-dictionary`.
 
 ---
 
