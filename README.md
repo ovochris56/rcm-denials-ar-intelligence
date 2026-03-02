@@ -82,19 +82,6 @@ Recommended Operational Actions
 -		Introduce predictive flags for high-risk claims before submission
 -		Standardize denial follow-up workflows to reduce variability
 -		Focus A/R reduction efforts on the highest aging buckets first
--- Denials table (simplified)
-CREATE TABLE dbo.Denials (
-    DenialID        nvarchar(50) NOT NULL PRIMARY KEY,
-    ClaimID         nvarchar(50) NOT NULL,
-    DenialDate      date         NOT NULL,
-    DenialCategory  nvarchar(50) NOT NULL,
-    DenialReason    nvarchar(50) NULL,
-    AppealedFlag    bit          NOT NULL,
-    ResubmittedFlag bit          NOT NULL,
-    Outcome         nvarchar(50) NOT NULL
-);
-
--- 
 
 SQL Snippets
 
