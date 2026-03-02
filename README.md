@@ -84,6 +84,7 @@ Recommended Operational Actions
 -		Focus A/R reduction efforts on the highest aging buckets first
 
 SQL Snippets
+Below is an example of the SQL logic used to derive payer-level denial performance metrics that support dashboard KPIs.
 
 -- View: Denials by payer (total claims, denied claims, and denial rate)
 CREATE VIEW dbo.v_Denials_By_Payer AS
