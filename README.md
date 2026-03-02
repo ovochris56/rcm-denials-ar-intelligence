@@ -82,6 +82,35 @@ Recommended Operational Actions
 -		Introduce predictive flags for high-risk claims before submission
 -		Standardize denial follow-up workflows to reduce variability
 -		Focus A/R reduction efforts on the highest aging buckets first
+-- Denials table (simplified)
+CREATE TABLE dbo.Denials (
+    DenialID        nvarchar(50) NOT NULL PRIMARY KEY,
+    ClaimID         nvarchar(50) NOT NULL,
+    DenialDate      date         NOT NULL,
+    DenialCategory  nvarchar(50) NOT NULL,
+    DenialReason    nvarchar(50) NULL,
+    AppealedFlag    bit          NOT NULL,
+    ResubmittedFlag bit          NOT NULL,
+    Outcome         nvarchar(50) NOT NULL
+);
+
+-- 
+
+SQL Snippets
+
+-- View: Denials by payer (total claims, denied claims, and denial rate)
+CREATE VIEW dbo.v_Denials_By_Payer AS
+SELECT
+    c.PayerCanonical,
+    COUNT(DISTINCT c.ClaimID) AS TotalClaims,
+    COUNT(DISTINCT d.ClaimID) AS DeniedClaims,
+    CAST(COUNT(DISTINCT d.ClaimID) AS FLOAT) 
+        / NULLIF(COUNT(DISTINCT c.ClaimID), 0) AS DenialRate
+FROM dbo.Claims c
+LEFT JOIN dbo.Denials d
+    ON d.ClaimID = c.ClaimID
+GROUP BY c.PayerCanonical;
+
 ---
 
 ## Contact
