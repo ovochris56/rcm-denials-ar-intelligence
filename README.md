@@ -22,6 +22,8 @@ Leaders can use this dashboard to:
 This project uses:
 - **Synthetic claims + denial + payment data** generated to mirror common RCM workflows, OR
 
+Because real healthcare claims data is rarely publicly accessible, a synthetic dataset was generated in Python to simulate realistic billing, denial, and payment workflows for analytical demonstration purposes.
+
 No patient-identifiable data is used.
 
 ---
